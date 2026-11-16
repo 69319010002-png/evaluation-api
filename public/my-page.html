@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ระบบประเมินบุคลากร</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Sarabun', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f6f9;
+            color: #334155;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        header {
+            background-color: #ffffff;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            padding: 20px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        header h1 {
+            font-size: 1.5rem;
+            color: #1e293b;
+        }
+
+        .student-info {
+            font-size: 1rem;
+            color: #64748b;
+        }
+
+
+        .status-box {
+            background-color: #ffffff;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            padding: 14px 24px;
+            min-height: 48px;
+            color: #475569;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .card {
+            background-color: #ffffff;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            padding: 24px;
+            min-height: 300px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .card h2 {
+            font-size: 1.25rem;
+            color: #1e293b;
+            margin-bottom: 16px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .card ul {
+            list-style-type: disc;
+            padding-left: 20px;
+            line-height: 1.8;
+            color: #334155;
+        }
+
+        footer {
+            background-color: #ffffff;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            padding: 16px 24px;
+            text-align: center;
+            color: #64748b;
+            font-size: 0.95rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <header>
+            <h1>ระบบประเมินบุคลากร</h1>
+            <div class="student-info">นายกฤตพรต วงษ์แหลมสิงห์ 69319010002</div>
+        </header>
+
+        <div id="msg" class="status-box">
+            <!------>
+        </div>
+
+
+        <main class="content-grid">
+            <!-- -->
+            <section class="card">
+                <h2>แผนกในวิทยาลัย</h2>
+                <ul id="deptList">
+                    <!---->
+                </ul>
+            </section>
+
+            <section class="card">
+                <h2>บุคลากร</h2>
+                <ul id="userList">
+                    <!---->
+                </ul>
+            </section>
+        </main>
+
+        <footer>
+            วิชา Back-End 31901-2005
+        </footer>
+    </div>
+    <script>
+        async function showUsers() {
+            const res = await fetch('/api/users');
+            const json = await res.json();
+            const deptRes = await fetch('/api/departments');
+            const deptJson = await deptRes.json();
+            let html = '';
+            for (const u of json.data) {
+                const foundDept = deptJson.data.find(d => d.id == u.department_id);
+                html = html + '<li style="list-style-type: none;">' + u.id + '. ' + u.full_name + ' แผนก ' + (foundDept ? foundDept.name : 'ไม่ระบุ') + '</li>';
+            }
+            document.getElementById('userList').innerHTML = html;
+        }
+
+        showUsers();
+
+        async function showDepartments() {
+            const res = await fetch('/api/departments');
+            const json = await res.json();
+            document.getElementById('msg').innerHTML = json.message;
+            let html = '';
+            for (const d of json.data) {
+                html = html + '<li style="list-style-type: none;">' + d.id + '. ' + d.name + '</li>';
+            }
+            document.getElementById('deptList').innerHTML = html;
+        }
+        
+
+        showDepartments();
+
+
+
+    </script>
+
+
+</body>
+
+</html>

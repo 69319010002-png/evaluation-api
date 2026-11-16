@@ -1,9 +1,10 @@
 require('dotenv').config();
 const express = require('express');
- const departmentRouter = require('./routes/departments');
+const departmentRouter = require('./routes/departments');
 const userRouter = require('./routes/users')
 
 const app = express();
+app.use(express.json());
 app.use(express.static('public'));
  
 // URL ไหนขึ้นต้นด้วย /api/evaluatees ส่งต่อให้ไฟล์ routes/evaluatees.js จัดการ
